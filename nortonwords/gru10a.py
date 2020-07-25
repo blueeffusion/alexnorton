@@ -3,7 +3,7 @@ import numpy as np
 import os
 import time
 
-path_to_file = tf.keras.utils.get_file("./projectdata7.txt")
+path_to_file = tf.keras.utils.get_file('nudata.txt', 'https://nilsgibson.com/txt/nudata.txt')
 # Read and decode for python2 compatibility.
 text = open(path_to_file, 'rb').read().decode(encoding='utf-8')
 # Create set of unique characters in the text
@@ -88,7 +88,7 @@ checkpoint_callback=tf.keras.callbacks.ModelCheckpoint(
     save_weights_only=True)
 
 # starting with few epochs to minimize calculation time
-EPOCHS=10
+EPOCHS=30
 
 history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
 
@@ -110,7 +110,7 @@ def generate_text(model, start_string):
   # Evaluation step (generating text using the learned model)
 
   # Number of characters to generate
-    num_generate = 1000
+    num_generate = 1500
 
   # Converting our start string to numbers (vectorizing)
     input_eval = [char2idx[s] for s in start_string]
@@ -122,7 +122,7 @@ def generate_text(model, start_string):
   # Low temperatures results in more predictable text.
   # Higher temperatures results in more surprising text.
   # Experiment to find the best setting.
-    temperature = 1.0
+    temperature = 0.8
 
   # Here batch size == 1
     model.reset_states()
