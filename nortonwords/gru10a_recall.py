@@ -16,7 +16,7 @@ char2idx = {u:i for i, u in enumerate(vocab)}
 idx2char = np.array(vocab)
 text_as_int = np.array([char2idx[c] for c in text])
 # The maximum length sentence we want for a single input in characters
-seq_length = 150
+seq_length = 100
 examples_per_epoch = len(text)//(seq_length+1)
 # "from tensor slices" converts the text vector into a stream of character indices
 # chunks are seq_length+1
@@ -38,7 +38,7 @@ BATCH_SIZE = 64
 # (TF data is designed to work with possibly infinite sequences,
 # so it doesn't attempt to shuffle the entire sequence in memory. Instead,
 # it maintains a buffer in which it shuffles elements).
-BUFFER_SIZE = 15000
+BUFFER_SIZE = 10000
 
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
 
@@ -118,7 +118,7 @@ def generate_text(model, start_string):
   # Evaluation step (generating text using the learned model)
 
   # Number of characters to generate
-    num_generate = 2000
+    num_generate = 1500
 
   # Converting our start string to numbers (vectorizing)
     input_eval = [char2idx[s] for s in start_string]
@@ -130,7 +130,7 @@ def generate_text(model, start_string):
   # Low temperatures results in more predictable text.
   # Higher temperatures results in more surprising text.
   # Experiment to find the best setting.
-    temperature = 0.8
+    temperature = 0.7
 
   # Here batch size == 1
     model.reset_states()
@@ -151,4 +151,7 @@ def generate_text(model, start_string):
 
     return (start_string + ''.join(text_generated))
 
-print(generate_text(model, start_string=u"Alex says: "))
+with open("output.txt", "w") as text_file:
+    print(generate_text(model, start_string=u"Alex says: "), file=text_file)
+
+# print(generate_text(model, start_string=u"Alex says: "))
