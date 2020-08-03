@@ -5,8 +5,8 @@ import numpy as np
 import time
 import h5py
 
-path_to_file = tf.keras.utils.get_file('thisdata.txt',
-     'https://nilsgibson.com/txt/thisdata.txt')
+path_to_file = tf.keras.utils.get_file('newdata.txt',
+     'https://nilsgibson.com/txt/newdata.txt')
 # Read, then decode for py2 compat.
 text = open(path_to_file, 'rb').read().decode(encoding='utf-8')
 
@@ -41,7 +41,7 @@ BATCH_SIZE = 64
 # (TF data is designed to work with possibly infinite sequences,
 # so it doesn't attempt to shuffle the entire sequence in memory. Instead,
 # it maintains a buffer in which it shuffles elements).
-BUFFER_SIZE = 30000
+BUFFER_SIZE = 10000
 
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
 
@@ -90,6 +90,21 @@ checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
 checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_prefix,
     save_weights_only=True)
+
+EPOCHS = 5
+
+# history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
+
+history = model.fit(dataset, epochs=EPOCHS,
+    verbose = getOption("keras.fit_verbose", default = 2),
+     callbacks=[checkpoint_callback])
+
+# saving model
+model.save("C:/Users/Nils Gibson/Desktop/alexnorton/savedmodel/tf", overwrite=True, include_optimizer=True, save_format=tf,
+    signatures=None, options=None)
+
+model.save("C:/Users/Nils Gibson/Desktop/alexnorton/savedmodel/h5/model.hdf5", overwrite=True, include_optimizer=True, save_format='h5',
+    signatures=None, options=None)
 
 tf.train.latest_checkpoint(checkpoint_dir)
 
@@ -143,5 +158,3 @@ def generate_text(model, start_string):
 
 with open("output.txt", "w") as text_file:
     print(generate_text(model, start_string=u"Alex says: "), file=text_file)
-
-print("output saved to file")
